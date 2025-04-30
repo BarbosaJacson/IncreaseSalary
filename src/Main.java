@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Locale;
 import java.util.ArrayList;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,38 +29,24 @@ public class Main {
             scanner.nextLine();
             Employee employee = new Employee(id, name, salary);
             listEmployees.add(employee);
-
         }
         System.out.print("Enter the employee id that will have salary increase: ");
         Integer id = scanner.nextInt();
-        double percent = 0;
-        boolean idExists = false; // Verificar se o ID foi encontrado
-
-// Percorre a lista de funcionários
-        for (Employee employee : listEmployees) {
-            if (employee.getId() == id) { // Compara o ID do funcionário com o ID informado
-                idExists = true; // Marca que o ID existe
-                scanner.nextLine(); // Limpa o buffer do scanner
-                System.out.print("Enter the percentage: ");
-                percent = scanner.nextDouble();
-                 break; // Sai do loop após encontrar o funcionário
-            }
-        }
-
-// Se o ID não foi encontrado, exibe a mensagem
-        if (!idExists) {
-            System.out.println("This ID does not exist!!");
-        }
-
-         for (Employee employee : listEmployees) {
-            if (id == employee.getId()) {
-               employee.increaseSalary(percent);
-            }
-
-        }  System.out.println("Updated list of employees: " + listEmployees);
-
+        // Usa Stream com Lambda pra buscar o funcionário
+        listEmployees.stream()
+                .filter(emp -> emp.getId() == id)
+                .findFirst()
+                .ifPresentOrElse(
+                        emp -> {
+                            // Funcionário encontrado, pede o percentual e aplica aumento
+                            System.out.print("Enter the percentage: ");
+                            double percent = scanner.nextDouble();
+                            emp.increaseSalary(percent);
+                        },  () -> System.out.println("This ID does not exist!!")
+                );
+        System.out.println("\nUpdated employee list:");
+        listEmployees.forEach(System.out::println);
+        scanner.close();
     }
-
-
 }
 
