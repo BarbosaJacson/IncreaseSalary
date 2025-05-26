@@ -32,13 +32,12 @@ public class Main {
         }
         System.out.print("Enter the employee id that will have salary increase: ");
         Integer id = scanner.nextInt();
-        // Usa Stream com Lambda pra buscar o funcionário
+
         listEmployees.stream()
                 .filter(emp -> emp.getId() == id)
                 .findFirst()
                 .ifPresentOrElse(
                         emp -> {
-                            // Funcionário encontrado, pede o percentual e aplica aumento
                             System.out.print("Enter the percentage: ");
                             double percent = scanner.nextDouble();
                             emp.increaseSalary(percent);
